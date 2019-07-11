@@ -7,6 +7,7 @@ package it.polito.tdp.extflightdelays;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,7 +36,7 @@ public class ExtFlightDelaysController {
     private Button btnAnalizza; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoPartenza"
-    private ComboBox<?> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAeroportiConnessi"
     private Button btnAeroportiConnessi; // Value injected by FXMLLoader
@@ -51,11 +52,33 @@ public class ExtFlightDelaysController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
+    	String String = this.compagnieMinimo.getText();//da convertire in int  
+		
+		int minCompagnie;
+		try {
+			
+			minCompagnie = Integer.parseInt(String);	
+			
+		}catch(NumberFormatException e){
+			this.txtResult.setText("il formato inserito non è corretto\n");
+			return;
+			//break;
+		}
+    	
+    	model.createGraph(minCompagnie);
+    	if(model.getVertex().size()==0)
+    		txtResult.setText("non esiste nessun aereoporto con questo numero minimo di Compagnie!");
+    	else
+    	txtResult.setText("grafo creato!");
+    	
+    	this.cmbBoxAeroportoPartenza.getItems().addAll(model.getVertex());
 
     }
 
     @FXML
     void doCalcolaAeroportiConnessi(ActionEvent event) {
+    	
+    	this.txtResult.setText(model.outputConnessi(this.cmbBoxAeroportoPartenza.getValue()));
 
     }
 
